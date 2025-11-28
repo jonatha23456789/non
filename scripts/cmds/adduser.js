@@ -9,25 +9,25 @@ module.exports = {
 		countDown: 5,
 		role: 1,
 		description: {
-			vi: "Thêm thành viên vào box chat của bạn",
+			fr: "Ajouter des membres à votre groupe de discussion",
 			en: "Add user to box chat of you"
 		},
-		category: "box chat",
+		category: "discussion de groupe",
 		guide: {
-			en: "   {pn} [link profile | uid]"
+			fr: "   {pn} [lien profil | uid]"
 		}
 	},
 
 	langs: {
-		vi: {
-			alreadyInGroup: "Đã có trong nhóm",
-			successAdd: "- Đã thêm thành công %1 thành viên vào nhóm",
-			failedAdd: "- Không thể thêm %1 thành viên vào nhóm",
-			approve: "- Đã thêm %1 thành viên vào danh sách phê duyệt",
-			invalidLink: "Vui lòng nhập link facebook hợp lệ",
-			cannotGetUid: "Không thể lấy được uid của người dùng này",
-			linkNotExist: "Profile url này không tồn tại",
-			cannotAddUser: "Bot bị chặn tính năng hoặc người dùng này chặn người lạ thêm vào nhóm"
+		fr: {
+			alreadyInGroup: "Déjà dans le groupe",
+			successAdd: "- Ajouté avec succès %1 membre(s) au groupe",
+			failedAdd: "- Impossible d'ajouter %1 membre(s) au groupe",
+			approve: "- Ajouté %1 membre(s) à la liste d'approbation",
+			invalidLink: "Veuillez entrer un lien Facebook valide",
+			cannotGetUid: "Impossible d'obtenir l'UID de cet utilisateur",
+			linkNotExist: "Cette URL de profil n'existe pas",
+			cannotAddUser: "Le bot est bloqué ou cet utilisateur empêche les inconnus d'être ajoutés au groupe"
 		},
 		en: {
 			alreadyInGroup: "Already in group",
@@ -46,14 +46,8 @@ module.exports = {
 		const botID = api.getCurrentUserID();
 
 		const success = [
-			{
-				type: "success",
-				uids: []
-			},
-			{
-				type: "waitApproval",
-				uids: []
-			}
+			{ type: "success", uids: [] },
+			{ type: "waitApproval", uids: [] }
 		];
 		const failed = [];
 
@@ -63,13 +57,11 @@ module.exports = {
 			if (findType)
 				findType.uids.push(item);
 			else
-				failed.push({
-					type: messageError,
-					uids: [item]
-				});
+				failed.push({ type: messageError, uids: [item] });
 		}
 
 		const regExMatchFB = /(?:https?:\/\/)?(?:www\.)?(?:facebook|fb|m\.facebook)\.(?:com|me)\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]+)(?:\/)?/i;
+
 		for (const item of args) {
 			let uid;
 			let continueLoop = false;
@@ -88,9 +80,9 @@ module.exports = {
 						else if (i == 9 || (err.name != "SlowDown" && err.name != "CannotGetData")) {
 							checkErrorAndPush(
 								err.name == "InvalidLink" ? getLang('invalidLink') :
-									err.name == "CannotGetData" ? getLang('cannotGetUid') :
-										err.name == "LinkNotExist" ? getLang('linkNotExist') :
-											err.message,
+								err.name == "CannotGetData" ? getLang('cannotGetUid') :
+								err.name == "LinkNotExist" ? getLang('linkNotExist') :
+								err.message,
 								item
 							);
 							continueLoop = true;
@@ -104,8 +96,7 @@ module.exports = {
 			else
 				continue;
 
-			if (continueLoop == true)
-				continue;
+			if (continueLoop) continue;
 
 			if (members.some(m => m.userID == uid && m.inGroup)) {
 				checkErrorAndPush(getLang("alreadyInGroup"), item);
@@ -129,12 +120,11 @@ module.exports = {
 		const lengthUserError = failed.length;
 
 		let msg = "";
-		if (lengthUserSuccess)
-			msg += `${getLang("successAdd", lengthUserSuccess)}\n`;
-		if (lengthUserWaitApproval)
-			msg += `${getLang("approve", lengthUserWaitApproval)}\n`;
+		if (lengthUserSuccess) msg += `${getLang("successAdd", lengthUserSuccess)}\n`;
+		if (lengthUserWaitApproval) msg += `${getLang("approve", lengthUserWaitApproval)}\n`;
 		if (lengthUserError)
 			msg += `${getLang("failedAdd", failed.reduce((a, b) => a + b.uids.length, 0))} ${failed.reduce((a, b) => a += `\n    + ${b.uids.join('\n       ')}: ${b.type}`, "")}`;
+
 		await message.reply(msg);
 	}
 };
