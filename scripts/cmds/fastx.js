@@ -26,22 +26,22 @@ module.exports = {
  version: "1.2",
  cooldowns: 5,
  role: 0,
- shortDescription: "Generate AI images",
- longDescription: "Generates 4 images from a prompt and combines them in a grid.",
- category: "image generator",
+ shortDescription: "Générer des images IA",
+ longDescription: "Génère 4 images à partir d'un prompt et les combine dans une grille.",
+ category: "générateur d'images",
  guide: "{p}fastx <prompt> [--ar <ratio>]"
  },
 
  onStart: async function ({ message, args, api, event }) {
  const startTime = Date.now();
  const userID = event.senderID;
- const waitingMessage = await message.reply(`Fastx is generating your images...`);
+ const waitingMessage = await message.reply(`Fastx génère vos images...`);
 
  try {
  let prompt = "";
  let ratio = "1:1";
 
- // Parse arguments
+ // Analyse des arguments
  for (let i = 0; i < args.length; i++) {
  if (args[i] === "--ar" && args[i + 1]) {
  ratio = args[i + 1];
@@ -57,7 +57,7 @@ module.exports = {
  const cacheFolderPath = path.join(__dirname, "/tmp");
  if (!fs.existsSync(cacheFolderPath)) fs.mkdirSync(cacheFolderPath);
 
- // Download all 4 images
+ // Téléchargement des 4 images
  const images = await Promise.all(
  urls.map(async (url, index) => {
  const { data } = await axios.get(url);
@@ -82,7 +82,7 @@ module.exports = {
  })
  );
 
- // Load and merge images
+ // Charger et combiner les images
  const loadedImages = await Promise.all(images.map(img => loadImage(img)));
  const width = loadedImages[0].width;
  const height = loadedImages[0].height;
@@ -103,7 +103,7 @@ module.exports = {
  const duration = ((endTime - startTime) / 1000).toFixed(2);
 
  const reply = await message.reply({
- body: `❏ U1, U2, U3, U4\nTime: ${duration}s`,
+ body: `❏ U1, U2, U3, U4\nTemps: ${duration}s`,
  attachment: fs.createReadStream(combinedImagePath)
  });
 
@@ -115,9 +115,9 @@ module.exports = {
  });
 
  } catch (error) {
- console.error("Error generating image:", error.message);
+ console.error("Erreur lors de la génération de l'image:", error.message);
  api.unsendMessage(waitingMessage.messageID);
- message.reply("❌ | Failed to generate image.");
+ message.reply("❌ | Échec de la génération de l'image.");
  }
  },
 
@@ -135,11 +135,11 @@ module.exports = {
  attachment: fs.createReadStream(images[selectedIndex])
  });
  } else {
- message.reply("❌ | Invalid action. Please use U1, U2, U3, or U4.");
+ message.reply("❌ | Action invalide. Veuillez utiliser U1, U2, U3 ou U4.");
  }
  } catch (err) {
- console.error("Reply error:", err.message);
- message.reply("❌ | Failed to send selected image.");
+ console.error("Erreur lors de la réponse:", err.message);
+ message.reply("❌ | Échec de l'envoi de l'image sélectionnée.");
  }
  }
 };
