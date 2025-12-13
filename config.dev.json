@@ -16,56 +16,35 @@
     "enable": false,
     "ignoreCommand": []
   },
-  "developerOnly": {
-    "enable": false,
-    "ignoreCommand": []
-  },
-  "vipOnly": {
-    "enable": false,
-    "ignoreCommand": []
-  },
   "adminBot": [
-    "61580333625022",
-    "61568791604271"
+    "",
+    "61554245590654"
   ],
-  "developer": [
-    "61580333625022",
-    "61568791604271"
-  ],
-  "vipuser": [
-    "61580333625022",
-    "61568791604271"
-  ],
-  "reactBy": {
-    "delete": ["🗑️", "❌", "😠", "😡", "😾"],
-    "kick": ["👟", "🦵"]
-  }, 
   "whiteListMode": {
     "enable": false,
     "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "۝𝐶𝐻𝑅𝐼𝑆𝑇𝑈𝑆۝",
-  "prefix": "¥",
+  "nickNameBot": "『༺֎𝗟𝗢𝗩𝗘𝗟𝗬 𝗔𝗜֎༻』ヅ",
+  "prefix": ".",
   "database": {
-    "type": "mongodb",
-    "uriMongodb": "mongodb+srv://Christus:voldigo225@cluster0.gykt2by.mongodb.net/?appName=Cluster0",
-    "autoSyncWhenStart": "true",
+    "type": "sqlite",
+    "uriMongodb": "",
+    "autoSyncWhenStart": false,
     "autoRefreshThreadInfoFirstTime": true,
     "notes": "(1) type selects 'json' or 'sqlite' or 'mongodb'. If you choose mongodb, enter uri connect mongodb in the uriMongodb section, instructions to get uri connect mongodb at: https://youtu.be/z1f9urHW5xY. I recommend using 'mongodb' or 'sqlite', json is not recommended because it is not stable. (2) when you set autoSyncWhenStart to true, the bot will automatically synchronize the data in the database when starting the bot, this will make the bot start slower. (3) when you set autoRefreshThreadInfoFirstTime to true, the bot will automatically refresh the thread information when get first message from the thread since starting the bot"
   },
   "timeZone": "Asia/Dhaka",
-    "credentials": {
+  "credentials": {
     "gmailAccount": {
-      "email": "maybesaim12@gmail.com",
-      "clientId": "100897454411-5r8hk9opvdijmogm98ksttg4asvfs3u6.apps.googleusercontent.com",
-      "clientSecret": "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",
-      "refreshToken": "1//04CwY3A993tGWCgYIARAAGAQSNwF-L9IrEMdVj25IWIOrpT0HX7Lo4YXx6ce0JP-C3GjKoyWSFb_-f_N3oHRL15ZwrsQ8TpBsjmI",
-      "apiKey": ""
+      "email": "vexaryan@gmail.com",
+      "clientId": "356551796908-109qeba7nv0e30u2c7o22gr9podqsiim.apps.googleusercontent.com",
+      "clientSecret": "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",
+      "refreshToken": "1//04otrr7tUfUAFCgYIARAAGAQSNwF-L9IrnanDeaer7kPniPX_EdWPKNnf4_z7ONCUcR5Jp6_kcSXWKAND0inf-n1Yv1LRryIKNhY"
     },
     "gRecaptcha": {
-      "siteKey": "6LdZTuIrAAAAAEJ9LXfW4a0V97vUPe31lp95DKvA",
-      "secretKey": "6LdZTuIrAAAAAEEK-qSFLsTkK_RJQnL4yTIhcJcL"
+      "siteKey": "6Lff7Y0mAAAAALiv3IBkCCOfCdEsN-lK-jtR5FCm",
+      "secretKey": "6Lff7Y0mAAAAAGQr8dO3lqDJVhTi8Q-tpLLy2kGo"
     }
   },
   "dashBoard": {
@@ -79,7 +58,7 @@
     "socket": {
       "enable": true,
       "channelName": "uptime",
-      "verifyToken": "u1940319-ea7f101121162c69af48f6ce"
+      "verifyToken": ""
     }
   },
   "autoRestart": {
@@ -134,9 +113,7 @@
     "userBanned": false,
     "needRoleToUseCmd": false,
     "needRoleToUseCmdOnReply": false,
-    "needRoleToUseCmdOnReaction": false,
-    "developerOnly": false, 
-    "vipOnly": false
+    "needRoleToUseCmdOnReaction": false
   },
   "logEvents": {
     "disableAll": false,
@@ -161,4 +138,4 @@
     "autoReconnect": false,
     "notes": "Document here: https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md#apisetoptionsoptions "
   }
-  }
+}
