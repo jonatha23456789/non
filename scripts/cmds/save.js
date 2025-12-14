@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-const p = [ "61568791604271","61580333625022"];//your uid here
+const p = [ "","61554245590654"];//your uid here
 const base = "https://tawsif.is-a.dev/save-text/upload";
 
 module.exports = {
