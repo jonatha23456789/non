@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-// Dictionnaire de polices stylées ✨
+// 🎨 Polices stylées
 const fonts = {
   a: "𝖺", b: "𝖻", c: "𝖼", d: "𝖽", e: "𝖾", f: "𝖿", g: "𝗀", h: "𝗁", i: "𝗂",
   j: "𝗃", k: "𝗄", l: "𝗅", m: "𝗆", n: "𝗇", o: "𝗈", p: "𝗉", q: "𝗊", r: "𝗋",
@@ -10,69 +10,83 @@ const fonts = {
   S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭"
 };
 
-// Fonction pour styliser du texte
-function stylize(text) {
-  return text
-    .split("")
-    .map((char) => fonts[char] || char)
-    .join("");
-}
+const stylize = (text) =>
+  text.split("").map(c => fonts[c] || c).join("");
 
 module.exports = {
   config: {
     name: "ai",
     aliases: [],
-    version: "1.0",
+    version: "2.0",
     author: "Kelvin",
     countDown: 3,
     role: 0,
-    shortDescription: "Answer to questions 💬",
-    longDescription: "Chat with a smart AI powered by GPT-5-mini 🧠",
+    shortDescription: "💬 AI Gemini 2.5",
+    longDescription: "Discute avec une IA Gemini rapide et stylée ✨",
     category: "AI",
-    guide: "ai <your question>"
+    guide: "ai <ta question> (optionnel : reply à une image)"
   },
 
   onStart: async function ({ api, event, args }) {
     const question = args.join(" ");
     if (!question) {
       return api.sendMessage(
-        "💡 | Pose une question, ex: ai Quelle est la capitale du Japon ?",
+        "💡 | Pose une question.\n📸 Tu peux aussi répondre à une image.",
         event.threadID,
         event.messageID
       );
     }
 
-    const stylizedQuestion = stylize(question);
+    // 📸 Image en reply (optionnelle)
+    let imageUrl = "";
+    if (
+      event.messageReply &&
+      event.messageReply.attachments &&
+      event.messageReply.attachments[0]?.type === "photo"
+    ) {
+      imageUrl = event.messageReply.attachments[0].url;
+    }
 
     try {
-      // 🔥 Nouvelle API GPT-5-mini
-      const url = `https://api.nekolabs.web.id/text-generation/gpt/5-mini?text=${encodeURIComponent(question)}&sessionId=${event.senderID}`;
+      const apiUrl =
+        "https://api.nekolabs.web.id/text-generation/gemini/2.5-flash-lite/v2" +
+        `?text=${encodeURIComponent(question)}` +
+        `&sessionId=${event.senderID}` +
+        (imageUrl ? `&imageUrl=${encodeURIComponent(imageUrl)}` : "");
 
-      const res = await axios.get(url);
+      const res = await axios.get(apiUrl);
       const data = res.data;
 
       if (!data.success || !data.result) {
         return api.sendMessage(
-          "⚠️ | Impossible d’obtenir une réponse de l’IA.",
+          "⚠️ | L’IA n’a pas répondu.",
           event.threadID,
           event.messageID
         );
       }
 
-      const answer = stylize(data.result);
+      const msg = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 ${stylize(question)}
 
-      const msg = `\n━━━━━━━━━━━━━━\n💬 ${stylizedQuestion}\n\n💡 ${answer}\n━━━━━━━━━━━━━━\n`;
+🤖 ${stylize(data.result)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
 
       api.sendMessage(msg, event.threadID, event.messageID);
 
-    } catch (e) {
-      console.error(e);
-      api.sendMessage("❌ | Une erreur est survenue lors de la requête à l’API.", event.threadID, event.messageID);
+    } catch (err) {
+      console.error("[AI ERROR]", err);
+      api.sendMessage(
+        "❌ | Erreur lors de la requête Gemini.",
+        event.threadID,
+        event.messageID
+      );
     }
   }
 };
 
-// Active le mode sans préfixe
+// 🔓 No-prefix
 const g = require("fca-aryan-nix");
 const wrapper = new g.GoatWrapper(module.exports);
 wrapper.applyNoPrefix({ allowPrefix: true });
