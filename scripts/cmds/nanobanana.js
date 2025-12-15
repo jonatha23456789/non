@@ -5,50 +5,82 @@ const path = require("path");
 module.exports = {
   config: {
     name: "nanobanana",
-    aliases: ["nb"],
-    version: "1.0",
-    author: "Christus | API Renz",
-    countDown: 5,
+    aliases: ["nb", "banana"],
+    version: "1.1.0",
+    author: "Kelvin",
+    countDown: 20,
     role: 0,
-    shortDescription: "Générer une image avec l'API NanoBanana",
-    longDescription: "Génère une image IA basée sur votre prompt en utilisant l'API NanoBanana.",
-    category: "générateur d'images",
-    guide: "{p}nanobanana [prompt]"
+    shortDescription: "🍌 Générateur d’images Nano Banana",
+    longDescription: "🎨 Génère une image IA (texte → image ou image → image)",
+    category: "AI-IMAGE",
+    guide: {
+      fr: "{pn} <prompt>\n📸 Tu peux répondre à une image\nEx: nanobanana anime girl blush"
+    }
   },
 
-  onStart: async function ({ api, event, args, message }) {
+  onStart: async function ({ message, args, event }) {
     const prompt = args.join(" ");
     if (!prompt) {
       return message.reply(
-        "⚠️ Veuillez fournir un prompt pour générer une image.\nExemple : /nanobanana Un chat mignon portant des lunettes de soleil"
+        "❌ | Donne un prompt.\n📌 Exemple : nanobanana anime girl blush\n📸 Tu peux aussi répondre à une image."
       );
     }
 
-    const processingMsg = await message.reply("⏳ Génération de votre image en cours...");
+    // 📸 Vérifier si l'utilisateur reply à une image
+    let imageUrl = null;
+    if (
+      event.messageReply &&
+      event.messageReply.attachments &&
+      event.messageReply.attachments[0]?.type === "photo"
+    ) {
+      imageUrl = event.messageReply.attachments[0].url;
+    }
 
-    const imgPath = path.join(__dirname, "cache", `${Date.now()}_nanobanana.jpg`);
-    const seed = 12345; 
+    const cacheDir = path.join(__dirname, "cache");
+    fs.ensureDirSync(cacheDir);
+    const imgPath = path.join(cacheDir, `nanobanana_${Date.now()}.png`);
+
+    const waitMsg = await message.reply(
+      "🍌 Génération Nano Banana en cours...\n⏳ L’IA dessine ton image 🎨"
+    );
 
     try {
-      const apiURL = `https://dev.oculux.xyz/api/nanobanana?prompt=${encodeURIComponent(prompt)}&seed=${seed}`;
-      const res = await axios.get(apiURL, { responseType: "arraybuffer" });
+      let apiUrl =
+        "https://api.nekolabs.web.id/image-generation/nano-banana/v6" +
+        `?prompt=${encodeURIComponent(prompt)}`;
 
-      await fs.ensureDir(path.dirname(imgPath));
-      await fs.writeFile(imgPath, Buffer.from(res.data, "binary"));
-      await api.unsendMessage(processingMsg.messageID);
-      message.reply({
-        body: `✅ Image générée pour : "${prompt}"`,
+      if (imageUrl) {
+        apiUrl += `&imageUrl=${encodeURIComponent(imageUrl)}`;
+      }
+
+      const res = await axios.get(apiUrl, { timeout: 70000 });
+
+      if (!res.data?.success || !res.data.result) {
+        throw new Error("Réponse API invalide");
+      }
+
+      // 📥 Télécharger l’image générée
+      const imgRes = await axios.get(res.data.result, {
+        responseType: "arraybuffer"
+      });
+
+      fs.writeFileSync(imgPath, imgRes.data);
+
+      await message.reply({
+        body:
+          "🍌✨ **Nano Banana Result**\n\n" +
+          `🖌️ Prompt:\n${prompt}` +
+          (imageUrl ? "\n\n📸 Mode : Image → Image" : "\n\n📝 Mode : Texte → Image"),
         attachment: fs.createReadStream(imgPath)
       });
 
+      fs.unlinkSync(imgPath);
+      await message.unsend(waitMsg.messageID);
+
     } catch (err) {
-      console.error("Erreur API NanoBanana :", err);
-      await api.unsendMessage(processingMsg.messageID);
-      message.reply("❌ Échec de la génération de l'image. Veuillez réessayer plus tard.");
-    } finally {
-      if (fs.existsSync(imgPath)) {
-        await fs.remove(imgPath);
-      }
+      console.error("[NanoBanana Error]", err.message);
+      await message.unsend(waitMsg.messageID);
+      message.reply("❌ | Erreur lors de la génération de l’image Nano Banana.");
     }
   }
 };
