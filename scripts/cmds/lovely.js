@@ -186,7 +186,7 @@ const handleAIRequest = async (api, event, userInput, message, isReply = false) 
     });
 
     global.GoatBot.onReply.set(sentMessage.messageID, {
-      commandName: 'ai',
+      commandName: 'lovely',
       messageID: sentMessage.messageID,
       author: userId
     });
@@ -201,7 +201,7 @@ const handleAIRequest = async (api, event, userInput, message, isReply = false) 
 
 module.exports = {
   config: {
-    name: 'lovely',
+    name: '',
     version: '3.2.0',
     author: 'Christus',
     role: 0,
