@@ -66,11 +66,11 @@ module.exports = {
       }
 
       const msg = `
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━
 💬 ${stylize(question)}
 
 🤖 ${stylize(data.result)}
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━
 `;
 
       api.sendMessage(msg, event.threadID, event.messageID);
