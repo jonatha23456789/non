@@ -6,7 +6,7 @@ module.exports = {
   config: {
     name: "nanobanana",
     aliases: ["nb", "banana"],
-    version: "1.1.0",
+    version: "1.2.0",
     author: "Kelvin",
     countDown: 20,
     role: 0,
@@ -26,7 +26,7 @@ module.exports = {
       );
     }
 
-    // 📸 Vérifier si l'utilisateur reply à une image
+    // 📸 Image en reply (optionnelle)
     let imageUrl = null;
     if (
       event.messageReply &&
@@ -45,8 +45,9 @@ module.exports = {
     );
 
     try {
+      // 🔥 API Nano Banana v5
       let apiUrl =
-        "https://api.nekolabs.web.id/image-generation/nano-banana/v6" +
+        "https://api.nekolabs.web.id/image-generation/nano-banana/v5" +
         `?prompt=${encodeURIComponent(prompt)}`;
 
       if (imageUrl) {
@@ -70,7 +71,9 @@ module.exports = {
         body:
           "🍌✨ **Nano Banana Result**\n\n" +
           `🖌️ Prompt:\n${prompt}` +
-          (imageUrl ? "\n\n📸 Mode : Image → Image" : "\n\n📝 Mode : Texte → Image"),
+          (imageUrl
+            ? "\n\n📸 Mode : Image → Image"
+            : "\n\n📝 Mode : Texte → Image"),
         attachment: fs.createReadStream(imgPath)
       });
 
